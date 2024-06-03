@@ -1,0 +1,24 @@
+---
+waiting_for_servers: 300
+tool: jmeter
+d_jmeter_dependencies:
+  - default-jre
+
+r_jmeter_dependencies:
+  - default-jre
+
+jmeter_url: "https://archive.apache.org/dist/jmeter/binaries/"
+jmeter_dir: "/opt/apache-jmeter-{{ jmeter_version }}/"
+executable_path: "/bin/"
+# install: true
+
+jmeter_script_path: "{{ jmeter_dir }}/bin/jmeter"
+heap_size_config: ': "${HEAP:="-Xms10g -Xmx10g -XX:MaxMetaspaceSize=512m"}"'
+
+jmeter_plugins_dir: "jmeter_plugins"
+
+jmeter_local_config_dir: jmeter
+jmeter_remote_config_dir: jmeter
+jmeter_plan_file: plan.jmx
+jmeter_output_file: output_result.csv
+output_report_dir: loadtest_result

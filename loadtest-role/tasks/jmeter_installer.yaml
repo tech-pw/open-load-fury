@@ -1,0 +1,44 @@
+
+- name: Install Jmeter's dependencies {{ d_jmeter_dependencies }} on Debian machine
+  ansible.builtin.apt:
+    update_cache: true
+    name: "{{ d_jmeter_dependencies }}"
+  when: ansible_os_family == "Debian"
+
+- name: Install Jmeter's dependencies {{ r_jmeter_dependencies }} on RedHat machine
+  ansible.builtin.yum:
+    update_cache: true
+    name: "{{ r_jmeter_dependencies}}"
+  when: ansible_os_family == "RedHat"
+
+- name: Get latest JMeter version
+  ansible.builtin.shell: |
+    JMETER_VERSION=$(curl -s {{ jmeter_url }} | grep -o 'apache-jmeter-[0-9]\+\.[0-9]\+\.[0-9]' | sort -V | tail -n 1 | cut -d '-' -f 3)
+    echo $JMETER_VERSION
+  register: latest_jmeter_version
+  when: jmeter_version is not defined
+
+- name: Setting Jmeter version to {{ latest_jmeter_version.stdout }}
+  ansible.builtin.set_fact:
+    jmeter_version: "{{ latest_jmeter_version.stdout }}"
+  when: jmeter_version is not defined
+
+- name: Creates Jmeter directory
+  ansible.builtin.file:
+    path: "{{ jmeter_dir }}"
+    state: directory
+    mode: 0755
+
+- name: Download and extract Jmeter {{ jmeter_version }}
+  ansible.builtin.unarchive:
+    src: "{{jmeter_url }}/apache-jmeter-{{ jmeter_version }}.tgz"
+    dest: "{{ jmeter_dir }}"
+    remote_src: yes
+    extra_opts: "--strip-components=1"
+
+- name: Create symbolic link
+  ansible.builtin.file:
+    src: "{{ jmeter_dir }}/bin/jmeter"
+    dest: "{{ executable_path }}/jmeter"
+    state: link
+

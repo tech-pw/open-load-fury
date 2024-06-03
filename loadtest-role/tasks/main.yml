@@ -1,0 +1,14 @@
+---
+- name: Wait {{ waiting_for_servers }} seconds for target connection to become reachable
+  ansible.builtin.wait_for_connection:
+    timeout: "{{ waiting_for_servers }}"
+
+- name: Gather facts
+  setup:
+
+- name: Include Jmeter config file
+  include_tasks: jmeter.yaml
+  when: tool == "jmeter"
+
+
+

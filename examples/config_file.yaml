@@ -1,0 +1,42 @@
+instances:
+  - region: ap-south-1
+    spec:
+      ## For more arguments follow boto3 run_instances doc
+      ## https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/ec2/client/run_instances.html
+      ImageId: ami-1234567890
+      InstanceType: t3.xlarge
+      KeyName: key-name
+      SecurityGroupIds:
+        - sg-1234567890
+      SubnetId: subnet-1234567890
+      TagSpecifications:
+        - ResourceType: instance
+          Tags:
+            - Key: Name
+              Value: Loadtest
+
+  ## Load test configurations
+loadtest:
+  ## if you specify the name for the loadtest, same name is used for uploading the final report to s3 bucket
+  name: demo
+  ## Specify number of ec2 instances on which you want to perform load test
+  s3_bucket_name: abcd
+  instance_count: 10
+  jmeter_local_data_dir: data/
+  tool: jmeter
+  install: true
+  jmeter_version: 5.6.3
+  # jmeter_local_config_dir: jmeter
+  # jmeter_remote_config_dir: jmeter/
+  # jmeter_output_file: result.csv
+  # output_report_dir: loadtest_result
+  # jmeter_plan_file: plan.jmx
+
+remote_execution:
+  ssh_key_dir: ssh_keys
+  ssh_user: 'ubuntu'
+  parallel_tasks_limit: 10
+  playbook_file: playbook.yaml
+
+log_file_path: loadtest.logs
+

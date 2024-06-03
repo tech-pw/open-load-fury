@@ -1,0 +1,50 @@
+---
+- name: Install jmeter
+  include_tasks: jmeter_installer.yaml
+  when: install is defined
+
+- name: Update Heap size in jmeter
+  ansible.builtin.lineinfile:
+    path: "{{ jmeter_script_path }}"
+    line: "{{ heap_size_config }}"
+    regexp: '^:.*HEAP.*$'
+  when: heap_size_config is defined
+
+- name: Find the jmeter plugins
+  find:
+    paths: "{{ jmeter_plugins_dir }}"
+    file_type: directory
+    recurse: no
+  register: subdirectories
+  delegate_to: localhost
+  become: false
+  when: jmeter_plugins_dir is defined
+
+- name: Synchronize Jmeter plugins
+  ansible.builtin.copy:
+    src: "{{ item.path }}/lib/"
+    dest: "{{ jmeter_dir }}/lib/"
+    mode: 0755
+  loop: "{{ subdirectories.files }}"
+  when: jmeter_plugins_dir is defined
+
+- name: Copy config files to remote servers
+  ansible.builtin.copy:
+    src: "{{ jmeter_local_config_dir }}/"
+    dest: "{{ jmeter_remote_config_dir }}/"
+    mode: 0755
+
+- name: Copy data file to remote machine
+  ansible.builtin.copy:
+    src: "{{ jmeter_local_data_dir }}/data_{{ ansible_host }}.csv"
+    dest: "{{ jmeter_remote_config_dir }}/data.csv"
+  when: jmeter_local_data_dir is defined
+
+
+- name: Run load test
+  ansible.builtin.shell: jmeter -n -t {{ jmeter_remote_config_dir }}/{{ jmeter_plan_file }} -l {{ jmeter_output_file }}
+
+- name: Get loadtest result on host machine
+  ansible.builtin.fetch:
+    src: "{{ jmeter_output_file }}"
+    dest: "{{ output_report_dir }}"

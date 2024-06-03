@@ -1,0 +1,6 @@
+tool: jmeter
+jmeter_url: "https://archive.apache.org/dist/jmeter/binaries/"
+jmeter_dir: "apache-jmeter-{{ jmeter_version }}/"
+install: true
+combined_csv_report: final_loadtest_report.csv
+final_report_dir: final_report

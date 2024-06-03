@@ -1,0 +1,37 @@
+- name: Install Jmeter on host machine
+  hosts: localhost
+  vars_files:
+    - vars_file.yaml
+    - default_vars.yaml
+
+  tasks:
+
+    - name: Get latest JMeter version
+      ansible.builtin.shell: |
+        JMETER_VERSION=$(curl -s {{ jmeter_url }} | grep -o 'apache-jmeter-[0-9]\+\.[0-9]\+\.[0-9]' | sort -V | tail -n 1 | cut -d '-' -f 3)
+        echo $JMETER_VERSION
+      register: latest_jmeter_version
+      when: jmeter_version is not defined
+
+    - name: Setting Jmeter version to {{ latest_jmeter_version.stdout }}
+      ansible.builtin.set_fact:
+        jmeter_version: "{{ latest_jmeter_version.stdout }}"
+      when: jmeter_version is not defined
+
+    - name: Creates Jmeter directory
+      ansible.builtin.file:
+        path: "{{ jmeter_dir }}"
+        state: directory
+        mode: 0755
+
+    - name: Download and extract Jmeter {{ jmeter_version }}
+      ansible.builtin.unarchive:
+        src: "{{jmeter_url }}/apache-jmeter-{{ jmeter_version }}.tgz"
+        dest: "{{ jmeter_dir }}"
+        remote_src: yes
+        extra_opts: "--strip-components=1"
+
+    - name: Create final report
+      ansible.builtin.shell: "rm -rf {{ final_report_dir }}; {{ jmeter_dir }}/bin/jmeter -g {{ combined_csv_report }} -o {{ final_report_dir }}"
+
+

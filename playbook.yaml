@@ -1,0 +1,9 @@
+- name: Run load test
+  hosts: webservers
+  become: true
+  gather_facts: false
+  vars_files:
+  - vars_file.yaml
+  roles:
+    - loadtest-role
+
