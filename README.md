@@ -1,14 +1,8 @@
 
-# Overview: Distributed Load Testing Setup with JMeter on EC2 Instances
-
-![logo](./images/pw.jpg)
-
-[Physics Wallah](https://www.pw.live/)
+# Open Load Fury - Distributed load testing made easy with <img src="./images/pw.jpg" alt="drawing" width="30"/>
 
 
-## Overview
-
-This document outlines the setup and execution of a distributed load testing environment using Apache JMeter on Amazon EC2 instances. The goal is to enable users to perform comprehensive load tests on their applications, simulating real-world scenarios by distributing the load across different geographic regions and availability zones. The entire setup is user-friendly, requiring interaction only through a YAML configuration file.
+Open Load fury help in execution of a distributed load testing environment using Apache JMeter on Amazon EC2 instances. The goal is to enable users to perform comprehensive load tests on their applications, simulating real-world scenarios by distributing the load across different geographic regions and availability zones. The entire setup is user-friendly, requiring interaction only through a YAML configuration file.
 
 ## Load Test Features
 
@@ -23,7 +17,7 @@ Create final HTML report            | Generates a final HTML report using the CS
 Upload final HTML report to S3 bucket | Uploads the final HTML report to an S3 bucket | Yes
 
 
-## Structure
+## How to read code
 
 ```
 ├── jmeter            # Load test configuration files, such as plan.jmx
@@ -200,10 +194,10 @@ Ensure you have Python and the required dependencies installed:
 pip install -r requirements.txt
 ```
 
-For running load test
-:```
+For running load test:
+```
 python3 main.py -f your_config_file.yaml
-``
+```
 
 # Contributing
 
