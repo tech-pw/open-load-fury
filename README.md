@@ -201,7 +201,7 @@ pip install -r requirements.txt
 ```
 
 For running load test
-:```
+```
 python3 main.py -f your_config_file.yaml
 ```
 
