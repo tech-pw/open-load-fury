@@ -194,7 +194,8 @@ Ensure you have Python and the required dependencies installed:
 pip install -r requirements.txt
 ```
 
-For running load test:
+For running load test
+
 ```
 python3 main.py -f your_config_file.yaml
 ```
